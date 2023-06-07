@@ -1,34 +1,21 @@
 const logger = require('../utils/logger');
-const {AccountService} = require("../service");
+const { AccountService } = require('../service');
 
-function HTTPError(statusCode, message) {
-    const error = new Error(message);
-    error.statusCode = statusCode;
-    return error;
-}
+async function getAccounts(req, res) {
+  logger.info('Getting Accounts');
 
-async function  getAccounts(req, res) {
-    logger.info('Getting Accounts');
-
-    const { pageSize, pageNumber } = req.params;
-    const size = parseInt(pageSize); // 15
-    const pageNum = parseInt(pageNumber); // 3
-
-    try {
-        // Calculate the range of objects to retrieve based on page size and number
-
-
-        // Make the necessary requests to the Moody API to get the desired objects
-        const objects = await AccountService.getAccountsFromMoodyAPI(size, pageNum);
-
-        // Return the objects as a response to the client
-        res.json(objects);
-    } catch (error) {
-        console.error('Error:', error.message);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
+  const { pageSize, pageNumber } = req.params;
+  const size = parseInt(pageSize, 10);
+  const pageNum = parseInt(pageNumber, 10);
+  try {
+    const result = await AccountService.getAccountsFromMoodyAPI(size, pageNum);
+    res.json(result);
+  } catch (e) {
+    console.error('Error:', e.message);
+    res.status(e.statusCode || 400).send({ message: `Something went wrong. ${e}` });
+  }
 }
 
 module.exports = {
-    getAccounts,
+  getAccounts,
 };
