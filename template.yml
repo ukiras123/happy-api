@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Happy API Stack with Lambda function and API gateway
+
+Globals:
+  Api:
+    Cors:
+      AllowMethods: "'*'"
+      AllowHeaders: "'*'"
+      AllowOrigin: "'*'"
+
+Parameters:
+  ENV:
+    Type: String
+    Description: Deployment Environment
+
+Resources:
+  HappyProxyApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+  HappyLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: Happy-lambda
+      Description: Main Lambda Function for Happy API
+      CodeUri:
+      Handler: lambda.handler
+      Runtime: nodejs18.x
+      MemorySize: 1024
+      Timeout: 500
+      Events:
+        Proxy:
+          Type: Api
+          Properties:
+            RestApiId: !Ref HappyProxyApi
+            Path: /{proxy+}
+            Method: any
+      Environment:
+        Variables:
+          NODE_ENV: production
+Outputs:
+  ApiURL:
+    Description: "API endpoint URL for Prod environment Happy-api"
+    Value: !Sub "https://${HappyProxyApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"

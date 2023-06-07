@@ -1,7 +1,9 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const bodyParser = require('body-parser');
-require('dotenv').config({ path: `.env.${process.env.NODE_ENV || 'development'}` });
+
+require('dotenv').config({ path: path.resolve(__dirname, `.env.${process.env.NODE_ENV || 'development'}`) });
 
 const app = express();
 app.use(cors());
