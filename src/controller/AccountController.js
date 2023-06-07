@@ -2,16 +2,15 @@ const logger = require('../utils/logger');
 const { AccountService } = require('../service');
 
 async function getAccounts(req, res) {
-  logger.info('Getting Accounts');
-
+  logger.info('---------- Getting Accounts ----------');
   const { pageSize, pageNumber } = req.params;
   const size = parseInt(pageSize, 10);
   const pageNum = parseInt(pageNumber, 10);
   try {
     const result = await AccountService.getAccountsFromMoodyAPI(size, pageNum);
-    res.json(result);
+    res.status(200).send(result);
   } catch (e) {
-    console.error('Error:', e.message);
+    logger.error('Error:', e.message);
     res.status(e.statusCode || 400).send({ message: `Something went wrong. ${e}` });
   }
 }

@@ -1,10 +1,17 @@
 {
   "name": "happy-api",
   "version": "1.0.0",
-  "description": "",
+  "description": "This service converts Moody API to Happy API",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon app.js"
+    "test": "jest",
+    "start:dev": "nodemon server.js",
+    "start": "NODE_ENV=production node server.js",
+    "build:lambda": "sam package --s3-bucket hbg-public --s3-prefix happy-api --template-file template.yml --output-template-file output.yml --profile hbg",
+    "deploy:lambda": "sam deploy --template-file output.yml --parameter-overrides ENV=production --stack-name happy-api-stack --capabilities CAPABILITY_IAM --profile hbg"
+  },
+  "jest": {
+    "testTimeout": 15000
   },
   "keywords": [],
   "author": "",
@@ -16,6 +23,8 @@
     "dotenv": "^16.1.4",
     "express": "^4.18.2",
     "jest": "^29.5.0",
+    "joi": "^17.9.2",
+    "serverless-http": "^3.2.0",
     "supertest": "^6.3.3",
     "winston": "^3.9.0"
   },
