@@ -14,4 +14,8 @@ const { accountsRoutes } = require('./src/routes');
 
 app.use('/api/accounts', accountsRoutes);
 
+app.get('/', (req, res) => {
+  res.status(200).send({ message: 'healthy' });
+});
+
 module.exports = app;
